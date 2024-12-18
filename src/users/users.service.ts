@@ -1,26 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(@InjectModel(User) private readonly userModel: typeof User) {}
+  async findAll() {
+    return await this.userModel.findAll();
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findOne(id: number) {
+    return await this.userModel.findOne({ where: { id: id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  // async update(id: number, updateUserDto: UpdateUserDto) {
+  //   return await this.userModel.findOne({ where: { id: id } });
+  // }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    try {
+      const get = await this.userModel.findOne({ where: { id: id } });
+      if (!get) {
+        throw new NotFoundException('User not found');
+      }
+      await this.userModel.destroy({ where: { id: id } });
+      return {
+        msg: 'Your user deleted',
+        deletedUserID: id,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

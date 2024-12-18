@@ -1,20 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { InjectModel } from '@nestjs/sequelize';
-import { Auth } from './entities/auth.entity';
 import { LoginAuthDto } from './dto/login-auth.dto';
+import { AuthRepository } from './repositories/user.repositories';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(Auth) private readonly authModel: typeof Auth) {}
-  register(createAuthDto: CreateAuthDto) {
-    return createAuthDto;
+  constructor(@Inject() private readonly authRepo: AuthRepository) {}
+  async register(createAuthDto: CreateAuthDto) {
+    try {
+      return this.authRepo.registerUserRepo(createAuthDto);
+    } catch (error) {
+      return error;
+    }
   }
 
   login(loginAuthDto: LoginAuthDto) {
-    return loginAuthDto;
+    try {
+      return this.authRepo.loginUserRepo(loginAuthDto);
+    } catch (error) {
+      return error;
+    }
   }
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  findOne(email: string) {
+    try {
+      return this.authRepo.findOne(email);
+    } catch (error) {
+      return error;
+    }
   }
 }

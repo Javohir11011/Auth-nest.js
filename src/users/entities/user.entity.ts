@@ -13,4 +13,6 @@ export class User extends Model {
 
   @Column({ defaultValue: false })
   isActive: boolean;
+  role: any;
+  private _id: any;
 }

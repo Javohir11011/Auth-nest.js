@@ -11,6 +11,9 @@ export class Auth extends Model {
   @Column
   password: string;
 
+  @Column
+  roles: string;
+
   @Column({ defaultValue: false })
   isActive: boolean;
 }

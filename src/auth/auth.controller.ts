@@ -16,7 +16,7 @@ export class AuthController {
     return this.authService.login(createAuthDto);
   }
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  findOne(@Param('email') email: string) {
+    return this.authService.findOne(email);
   }
 }
